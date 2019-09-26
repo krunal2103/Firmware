@@ -1663,17 +1663,17 @@ void Ekf2::run()
 
 				// calculate noise filtered velocity innovations which are used for pre-flight checking
 				if (vehicle_status.arming_state == vehicle_status_s::ARMING_STATE_STANDBY) {
-					// calculate coefficients for LPF applied to innovation sequences
-					float alpha = constrain(sensors.accelerometer_integral_dt / 1.e6f * _innov_lpf_tau_inv, 0.0f, 1.0f);
-					float beta = 1.0f - alpha;
+					Vector2f vel_ne_innov_lpf;
+					_filter_vel_n_innov.setDt(sensors.accelerometer_integral_dt * 1e-6);
+					_filter_vel_n_innov.setTauInv(_innov_lpf_tau_inv);
 
-					// filter the velocity and innvovations
-					_vel_ne_innov_lpf(0) = beta * _vel_ne_innov_lpf(0) + alpha * constrain(innovations.vel_pos_innov[0],
-							       -_vel_innov_spike_lim, _vel_innov_spike_lim);
-					_vel_ne_innov_lpf(1) = beta * _vel_ne_innov_lpf(1) + alpha * constrain(innovations.vel_pos_innov[1],
-							       -_vel_innov_spike_lim, _vel_innov_spike_lim);
-					_vel_d_innov_lpf = beta * _vel_d_innov_lpf + alpha * constrain(innovations.vel_pos_innov[2],
-							   -_vel_innov_spike_lim, _vel_innov_spike_lim);
+					// TODO : set spike lim
+					vel_ne_innov_lpf(0) = _filter_vel_n_innov.update(innovations.vel_pos_innov[0]);
+
+					float alpha = _filter_vel_n_innov.getAlpha(); // Get alpha to use it in the other filters
+
+					vel_ne_innov_lpf(1) = _filter_vel_e_innov.update(innovations.vel_pos_innov[1], alpha);
+					float vel_d_innov_lpf = _filter_vel_d_innov.update(innovations.vel_pos_innov[2], alpha);
 
 					// set the max allowed yaw innovaton depending on whether we are not aiding navigation using
 					// observations in the NE reference frame.
@@ -1693,11 +1693,11 @@ void Ekf2::run()
 					}
 
 					// filter the yaw innovations
-					_yaw_innov_magnitude_lpf = beta * _yaw_innov_magnitude_lpf + alpha * constrain(innovations.heading_innov,
-								   -2.0f * yaw_test_limit, 2.0f * yaw_test_limit);
+					// TODO: set spike lim = 2.0f * yaw_test_limit
+					float yaw_innov_magnitude_lpf = _filter_yaw_magnitude_innov.update(innovations.heading_innov, alpha);
 
-					_hgt_innov_lpf = beta * _hgt_innov_lpf + alpha * constrain(innovations.vel_pos_innov[5], -_hgt_innov_spike_lim,
-							 _hgt_innov_spike_lim);
+					// TODO set spike lim _hgt_innov_spike_lim
+					float hgt_innov_test_lim = _fliter_hgt_innov.update(innovations.vel_pos_innov[5], alpha);
 
 					// check the yaw and horizontal velocity innovations
 					float vel_ne_innov_length = sqrtf(innovations.vel_pos_innov[0] * innovations.vel_pos_innov[0] +
