@@ -25,6 +25,7 @@ px4_add_board(
 		camera_trigger
 		differential_pressure # all available differential pressure drivers
 		distance_sensor # all available distance sensor drivers
+		dshot
 		gps
 		#heater
 		imu/adis16448
@@ -110,6 +111,7 @@ px4_add_board(
 		tune_control
 		usb_connected
 		ver
+		work_queue
 
 	EXAMPLES
 		bottle_drop # OBC challenge
@@ -120,7 +122,6 @@ px4_add_board(
 		px4_mavlink_debug # Tutorial code from http://dev.px4.io/en/debug/debug_values.html
 		px4_simple_app # Tutorial code from http://dev.px4.io/en/apps/hello_sky.html
 		rover_steering_control # Rover example app
-		segway
 		uuv_example_app
 
 	)
