@@ -2,11 +2,16 @@ Tilt-Quadrotor mixer for PX4FMU (2/2) V2
 ===========================
 
 This file defines the aux outputs mixer for a Tilt-quadrotor in the + configuration.
-
-# @output AUX1 Pitch servo motor for rotor 1 arm
-# @output AUX2 Pitch servo motor for rotor 2 arm
-# @output AUX3 Pitch servo motor for rotor 3 arm
-# @output AUX4 Pitch servo motor for rotor 4 arm
+# Aircraft morot config:
+#
+#   (M:1)---(Servo:1)---(M:2)
+#               |
+#               |
+#               |
+#   (M:3)---(Servo:2)---(M:4)
+#
+# @output AUX1 Pitch servo motor for rotor 1 & 2 arm
+# @output AUX2 Pitch servo motor for rotor 3 & 4 arm
 
 Servo 1
 
@@ -14,16 +19,6 @@ M: 1
 S: 0 1   -1000  -1000     0 -10000  10000
 
 Servo 2
-
-M: 1
-S: 0 1   1000   1000      0 -10000  10000
-
-Servo 3
-
-M: 1
-S: 0 1   -1000  -1000     0 -10000  10000
-
-Servo 4
 
 M: 1
 S: 0 1   1000   1000      0 -10000  10000

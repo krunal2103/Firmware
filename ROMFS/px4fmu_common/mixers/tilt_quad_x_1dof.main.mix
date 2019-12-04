@@ -3,6 +3,15 @@ Tilt-Quadrotor mixer for PX4FMU (1/2) V2
 
 This file defines the main outputs mixer for a Tilt-quadrotor in the + configuration.
 
+This file defines the aux outputs mixer for a Tilt-quadrotor in the + configuration.
+# Aircraft morot config:
+#
+#   (M:1)---(Servo:1)---(M:2)
+#               |
+#               |
+#               |
+#   (M:3)---(Servo:2)---(M:4)
+#
 # @output MAIN1 motor 1
 # @output MAIN2 motor 2
 # @output MAIN3 motor 3
